@@ -26,15 +26,15 @@ module.exports = {
         let cypher = 'aes-' + keyLength * 8 + '-cbc';
 
         //Get session object
-        laravelSession = new Buffer(laravelSession, 'base64');
+        laravelSession = Buffer.from(laravelSession, 'base64');
         laravelSession = laravelSession.toString();
         laravelSession = JSON.parse(laravelSession);
 
         //Create key buffer
-        laravelKey = new Buffer(laravelKey, 'base64');
+        laravelKey = Buffer.from(laravelKey, 'base64');
 
         //crypto required iv in binary or buffer
-        laravelSession.iv = new Buffer(laravelSession.iv, 'base64');
+        laravelSession.iv = Buffer.from(laravelSession.iv, 'base64');
 
         //create decoder
         let decoder = crypto.createDecipheriv(cypher, laravelKey, laravelSession.iv);
@@ -42,8 +42,8 @@ module.exports = {
         //add data to decoder and return decoded
         let decoded = decoder.update(laravelSession.value, 'base64');
 
-        //unserialize
-        return unserialize(decoded);
+        //toString()
+        return decoded.toString() + decoder.final().toString();
     },
     getSessionFromFile: function (laravelSessionKey, filePath) {
         return new Promise(function (resolve, reject) {
